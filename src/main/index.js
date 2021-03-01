@@ -27,6 +27,11 @@ function createWindow () {
 
   mainWindow.loadURL(winURL)
 
+   // Open the DevTools.
+   if (process.env.NODE_ENV === 'development') {
+    BrowserWindow.addDevToolsExtension('C:/Users/80007599/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/5.3.4_0')
+}
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
