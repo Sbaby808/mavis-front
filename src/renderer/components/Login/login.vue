@@ -4,6 +4,7 @@
             <h3 id="title">Mavis</h3>
             <div id="info">
                 <el-avatar :size="100" :src="headUrl"></el-avatar>
+                <el-button type="primary" round @click="alilogin">Login</el-button>
                 <el-input style="display:block" id="username_content" v-model="username" placeholder="请输入账户名" type="string" clearable size="mini"></el-input>
             </div>
         </div>
@@ -60,6 +61,13 @@ export default {
         login: function() {
             this.$router.push('/index')
         },
+        alilogin: function() {
+            // this.$axios
+            //     .get('https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2021002129638214&scope=auth_base,auth_user&redirect_uri=' + encodeURI('sbaby808.com:8090/index'))
+            //     .then(response => (console.log(response)))
+            window.location.href = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2021002129638214&scope=auth_base,auth_user&redirect_uri=' +
+             encodeURI('http://sbaby808.com:9080/index')
+        }
     },
     watch:{
         username : function(val) {
