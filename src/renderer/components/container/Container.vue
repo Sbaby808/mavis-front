@@ -11,6 +11,33 @@
 <script>
 export default {
     name: 'container',
+    mounted: function() {
+        // debugger;
+        console.log("index:")
+        console.log(this.$route);
+        console.log(JSON.stringify(this.authInfo) === '"{}"')
+        if(JSON.stringify(this.authInfo) === '"{}"') {
+            this.$router.push('/login')
+        }
+    },
+    computed: {
+        authInfo:{
+            get() {
+                return this.$store.state.Counter.authInfo;
+            },
+            set(val) {
+                this.$store.dispatch('setAuth', val);
+            }
+        },
+        uid:{
+            get() {
+                return this.$store.state.Counter.uid;
+            },
+            set(val) {
+                this.$store.dispatch('setUid', val);
+            }
+        }
+    },
 }
 </script>
 

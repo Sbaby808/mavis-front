@@ -15,7 +15,7 @@
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
     "dev": "node .electron-vue/dev-runner.js",
-    "pack": "npm run pack:main && npm run pack:renderer",
+    "pack": "electron-packager . 'health-terminal' --platform=win32 --arch=x64  --out=./out --asar --app-version=0.0.1",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": ""
@@ -26,7 +26,7 @@
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
+    "vuex": "^3.6.2",
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
@@ -45,10 +45,10 @@
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.4",
+    "electron": "^2.0.18",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.4",
-    "electron-packager": "^12.1.0",
+    "electron-packager": "^12.2.0",
     "electron-rebuild": "^1.8.1",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",

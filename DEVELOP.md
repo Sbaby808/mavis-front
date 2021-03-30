@@ -18,4 +18,10 @@ npm install
 # install element-ui
 npm i element-ui -S
 
+# install vue-particles
+npm install vue-particles --save-dev
+
+# install vuex
+npm install vuex --save
+
 npm run dev

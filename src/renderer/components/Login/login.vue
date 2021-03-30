@@ -3,9 +3,9 @@
         <div id="login_content">
             <h3 id="title">Mavis</h3>
             <div id="info">
-                <el-avatar :size="100" :src="headUrl"></el-avatar>
-                <el-button type="primary" round @click="alilogin">Login</el-button>
-                <el-input style="display:block" id="username_content" v-model="username" placeholder="请输入账户名" type="string" clearable size="mini"></el-input>
+                <!-- <el-avatar :size="100" :src="headUrl"></el-avatar> -->
+                <el-button type="primary" round @click="alilogin">支付宝扫码登录</el-button>
+                <!-- <el-input style="display:block" id="username_content" v-model="username" placeholder="请输入账户名" type="string" clearable size="mini"></el-input> -->
             </div>
         </div>
         <div id="login_particles">
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import {guid} from '../../assets/js/common.js'
 export default {
     name: 'login',
     data() {
@@ -57,16 +58,78 @@ export default {
             headUrl : 'src/renderer/components/Login/imgs/head.jpg',
         }
     },
+    mounted() {
+        console.log(this.$route)
+        // 清空登录状态
+        this.$store.dispatch('setAuth', {})
+        this.$store.dispatch('setUid', '')
+    },
+    computed: {
+        authInfo:{
+            get() {
+                return this.$store.state.Counter.authInfo;
+            },
+            set(val) {
+                this.$store.dispatch('setAuth', val);
+            }
+        },
+        uid:{
+            get() {
+                return this.$store.state.Counter.uid;
+            },
+            set(val) {
+                this.$store.dispatch('setUid', val);
+            }
+        },
+    },
     methods:{
         login: function() {
             this.$router.push('/index')
         },
         alilogin: function() {
-            // this.$axios
-            //     .get('https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2021002129638214&scope=auth_base,auth_user&redirect_uri=' + encodeURI('sbaby808.com:8090/index'))
-            //     .then(response => (console.log(response)))
-            window.location.href = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2021002129638214&scope=auth_base,auth_user&redirect_uri=' +
-             encodeURI('http://sbaby808.com:9080/index')
+            const that = this;
+            // console.log(uid)
+            var uid = guid()
+            var login_window
+            that.$store.dispatch('setUid', uid)
+            console.log(uid)
+            //判断当前浏览器是否支持WebSocket
+            if ("WebSocket" in window) {
+                var socket = new WebSocket(
+                "ws://sbaby808.com:8088/mavis/" + uid
+                );
+                //连接发生错误的回调方法
+                socket.onerror = function() {
+                    console.log('ws error')
+                };
+                //连接成功建立的回调方法
+                socket.onopen = function(event) {
+                    console.log('ws success')
+                }; 
+                //接收到消息的回调方法
+                socket.onmessage = function(event) {
+                    console.log(event.data)
+                    that.$store.dispatch('setAuth', JSON.stringify(event.data))
+                    login_window.close()
+                    socket.close()
+                    that.$router.push('/')
+                };
+                //连接关闭的回调方法
+                socket.onclose = function() {
+                    console.log('ws close')
+                };
+                //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+                // window.onbeforeunload = function() {
+                //     this.websocket.close();
+                // };
+            } else {
+                alert("不支持建立socket连接");
+            }
+            login_window = window.open('https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2021002129638214&scope=auth_base,auth_user&redirect_uri=' +
+                encodeURIComponent('http://sbaby808.com:8088/wscontrol/login_callback?topic=' + uid))
+            // login_window.onbeforeunload = function() {
+            //     that.socket.close();
+            // }
         }
     },
     watch:{
@@ -123,5 +186,6 @@ export default {
 }
 #info {
     padding: 0%;
+    margin: 0%;
 }
 </style>
